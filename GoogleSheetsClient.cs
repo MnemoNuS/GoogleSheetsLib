@@ -35,26 +35,26 @@ namespace GoogleSheetsLib
 		static SheetsService service;
 
 		static string[] Scopes = { SheetsService.Scope.Spreadsheets };
-		static string AplicationSecrets = "client_secrets.json";
+		static string GoogleCredentialsFileName = "google_api_client_secrets.json";
 		static string ApplicationName = "AppName";
 		static string SpreadsheetId = "1nSb2Lr6Z3vrJmDwfhZehLswOhugDkyi2ihGwzSuyQmE";
-		static string DefaultSheet = "";
+		public static string DefaultSheet { get; private set; } = "";
 
-		public static GoogleSheetsClient Init(string aplicationName, string spreadsheetId, string defaultSheet, string aplicationSecrets)
+		public static GoogleSheetsClient Init(string aplicationName, string spreadsheetId, string defaultSheet, string googleCredentialsFileName)
 		{
 			ApplicationName = aplicationName;
 			SpreadsheetId = spreadsheetId;
 			DefaultSheet = defaultSheet;
-			AplicationSecrets = aplicationSecrets;
+			GoogleCredentialsFileName = googleCredentialsFileName;
 
 			GoogleCredential credestial;
-			using (var stream = new FileStream(AplicationSecrets, FileMode.Open, FileAccess.Read))
+			using (var stream = new FileStream(googleCredentialsFileName, FileMode.Open, FileAccess.Read))
 			{
 				credestial = GoogleCredential.FromStream(stream).CreateScoped(Scopes);
 			}
 
 			// Create Google Sheets API service.
-			_instance = new GoogleSheetsClient(new SheetsService(new BaseClientService.Initializer()
+			_instance = new GoogleSheetsClient(new SheetsService(new BaseClientService.Initializer
 			{
 				HttpClientInitializer = credestial,
 				ApplicationName = ApplicationName,
